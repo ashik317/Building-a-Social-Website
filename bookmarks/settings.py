@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-8x^fpuyoo!o(i2@*&ug^cs)e*km7vzb&!d2jh)z&^jbr9v7f3n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -38,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'social_django',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -101,6 +102,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#AUTHENTICATION_BACKENDS
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
+    'social_core.backends.google.GoogleOAuth2',
+]
+
+#PASSWORD_HASHERS
 PASSWORD_HASHERS = [
  'django.contrib.auth.hashers.PBKDF2PasswordHasher',
  'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
@@ -139,3 +148,13 @@ LOGOUT_URL = 'logout'
 
 #Email_Backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#Auch Key
+from decouple import config
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('GOOGLE_OAUTH2_SECRET')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = "https://mysite.com:8000/social-auth/complete/google-oauth2/"
+
+
