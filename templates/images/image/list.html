@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Images Bookmarked{% endblock %}
+
+{% block content %}
+    <h1>Images Bookmarked</h1>
+    <div id="image-list">
+        {% include 'images/image/list_images.html' %}
+    </div>
+{% endblock %}
+
+{% block domready %}
+    let page = 1;
+    let emptyPage = false;
+    let blockRequest = false;
+
+    window.addEventListener('scroll', function () {
+        const margin = document.body.scrollHeight - window.innerHeight - 200;
+
+        if (window.pageYOffset > margin && !emptyPage && !blockRequest) {
+            blockRequest = true;
+            page += 1;
+
+            fetch(`?images_only=1&page=${page}`)
+                .then(response => response.text())
+                .then(html => {
+                    if (html.trim() === '') {
+                        emptyPage = true;  // No more pages to load
+                    } else {
+                        const imageList = document.getElementById('image-list');
+                        imageList.insertAdjacentHTML('beforeend', html);
+                        blockRequest = false;  // Allow new requests
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading images:', error);
+                    blockRequest = false;  // Allow retrying after failure
+                });
+        }
+    });
+
+    // Trigger the scroll event initially to load more images if needed
+    window.dispatchEvent(new Event('scroll'));
+{% endblock %}
