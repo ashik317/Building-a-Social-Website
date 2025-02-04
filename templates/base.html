@@ -4,48 +4,44 @@
 <head>
   <title>{% block title %}{% endblock %}</title>
   <link href="{% static "css/base.css" %}" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href= "//127.0.0.1:8000/static/css/
-bookmarklet.css?r=1234567890123456">
 </head>
 <body>
   <div id="header">
     <span class="logo">Bookmarks</span>
     {% if request.user.is_authenticated %}
-        <ul class="menu">
-        <li {% if section == "dashboard" %} class="selected" {% endif %}>
-            <a href="{% url "dashboard" %}">My Dashboard</a>
+      <ul class="menu">
+        <li {% if section == "dashboard" %}class="selected"{% endif %}>
+          <a href="{% url "dashboard" %}">My dashboard</a>
         </li>
-        <li {% if section == "images" %} class="selected" {% endif %}>
-            <a href="{% url "images:list" %}">Images</a>
+        <li {% if section == "images" %}class="selected"{% endif %}>
+          <a href="{% url "images:list" %}">Images</a>
         </li>
-        <li {% if section == "People" %} class="selected" {% endif %}>
-            <a href="#">People</a>
+        <li {% if section == "people" %}class="selected"{% endif %}>
+          <a href="{% url "user_list" %}">People</a>
         </li>
-        </ul>
-    {% endif %}  
-  <spen class="user">
+      </ul>
+    {% endif %}
+    <span class="user">
       {% if request.user.is_authenticated %}
-          Hello {{ request.user.first_name|default:request.user.username }},
-          <form action="{% url 'logout' %}" method="post">
-          <button type="submit">
-              Logout
-          </button>
+        Hello {{ request.user.first_name|default:request.user.username }},
+        <form action="{% url "logout" %}" method="post">
+          <button type="submit">Logout</button>
           {% csrf_token %}
-          </form>
-          {% else %}
-          <a href="{% url 'login' %}">Log-in</a>
+        </form>
+      {% else %}
+        <a href="{% url "login" %}">Log-in</a>
       {% endif %}
-  </spen>
+    </span>
   </div>
   {% if messages %}
-      <ul class="messages">
+    <ul class="messages">
       {% for message in messages %}
-          <li class="message.tag">
+        <li class="{{ message.tags }}">
           {{ message|safe }}
-              <a href="#" class="close">x</a>
-          </li>
+          <a href="#" class="close">x</a>
+        </li>
       {% endfor %}
-      </ul>
+    </ul>
   {% endif %}
   <div id="content">
     {% block content %}
@@ -53,11 +49,12 @@ bookmarklet.css?r=1234567890123456">
   </div>
   <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
   <script>
-      const csrftoken = Cookies.get('csrftoken');
-      document.addEventListener('DOMContentLoaded', (event) => {
-          {% block domready %}
-          {% endblock %}
-      })
+    const csrftoken = Cookies.get('csrftoken');
+    document.addEventListener('DOMContentLoaded', (event) => {
+      // DOM loaded
+      {% block domready %}
+      {% endblock %}
+    })
   </script>
 </body>
 </html>
